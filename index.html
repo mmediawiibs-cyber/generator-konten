@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Ide Konten Media</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        textarea { width: 100%; height: 80px; margin-bottom: 10px; padding: 10px; }
+        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
+        #hasil { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; white-space: pre-wrap;}
+    </style>
+</head>
+<body>
+    <h2>💡 Generator Ide Konten</h2>
+    <p>Ketik topik konten yang ingin dibuat:</p>
+    <textarea id="topik" placeholder="Contoh: Kegiatan santri di bulan Ramadan..."></textarea>
+    <br>
+    <button onclick="mintaIde()">Generate Ide</button>
+
+    <div id="hasil">Hasil akan muncul di sini...</div>
+
+    <script>
+        async function mintaIde() {
+            const topik = document.getElementById('topik').value;
+            const divHasil = document.getElementById('hasil');
+            divHasil.innerText = "Sedang berpikir, tunggu sebentar...";
+
+            try {
+                // Ini akan memanggil file 'backend' rahasia kita di Vercel
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topik: topik })
+                });
+                
+                const data = await response.json();
+                if(data.error) throw new Error(data.error);
+                
+                divHasil.innerText = data.text;
+            } catch (error) {
+                divHasil.innerText = "Terjadi kesalahan: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
